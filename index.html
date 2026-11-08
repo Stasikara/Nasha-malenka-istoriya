@@ -68,6 +68,9 @@
     <div class="envelope-wrapper" id="envelope-wrapper" title="Натисни, щоб відкрити конверт">
       <div class="envelope-box">
         <div class="envelope-flap"></div>
+        <div class="envelope-letter">
+          <div style="font-family: var(--font-script); font-size: 1.8rem; color: #741122; text-align: center; margin-top: 15px;">Моя принцесо... ❤️</div>
+        </div>
         <div class="wax-seal">
           <span class="wax-seal-heart">💌</span>
         </div>
@@ -238,7 +241,8 @@
         <button id="btn-close-lightbox" class="lightbox-close-btn" aria-label="Закрити">✕</button>
         
         <div class="lightbox-image-side">
-          <img id="lightbox-img" src="" alt="Спогад" class="lightbox-img">
+          <img id="lightbox-img" src="" alt="Спогад" class="lightbox-img" title="Натисни для перегляду на весь екран">
+          <button id="btn-zoom-photo" class="lightbox-zoom-btn" title="Переглянути фото на весь екран" aria-label="Повний екран">🔍</button>
         </div>
 
         <div class="lightbox-text-side">
@@ -262,6 +266,12 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Повноекранний перегляд фото спогаду -->
+    <div id="photo-fullscreen-modal" class="photo-fullscreen-modal hidden" title="Натисни, щоб закрити">
+      <button id="btn-close-fullscreen-photo" class="fullscreen-close-btn" aria-label="Закрити">✕</button>
+      <img id="fullscreen-photo-img" src="" alt="Фото на весь екран">
     </div>
   </section>
 
@@ -300,13 +310,35 @@
         <span>Дістати записку з баночки</span>
         <span>✨</span>
       </button>
+
+      <div id="reasons-progress-badge" class="reasons-progress-badge">
+        Відкрито <span id="reasons-opened-count">0</span> з <span id="reasons-total-count">365</span> записок
+      </div>
+      <button id="btn-view-opened-reasons" class="btn-romantic btn-secondary hidden" style="margin-top: 10px; font-size: 0.85rem; padding: 8px 18px;">
+        <span>Переглянути відкриті</span>
+        <span>📜</span>
+      </button>
     </div>
 
     <!-- Модалка розкритої записки -->
     <div id="reason-modal" class="reason-note-modal">
       <div class="unfolded-note">
-        <span id="reason-number" class="reason-number">Причина #1</span>
+        <div class="reason-modal-top">
+          <span id="reason-number" class="reason-number">Причина #1</span>
+          <div id="reason-history-nav" class="reason-history-nav hidden">
+            <button id="btn-reason-prev" class="btn-reason-nav" aria-label="Попередня записка">❮</button>
+            <span id="reason-history-pos" class="reason-history-pos">1 з 1</span>
+            <button id="btn-reason-next" class="btn-reason-nav" aria-label="Наступна записка">❯</button>
+          </div>
+        </div>
         <p id="reason-text" class="reason-text"></p>
+
+        <!-- Завершення перегляду всіх записок -->
+        <div id="reason-completion-banner" class="reason-completion-banner hidden">
+          <p class="reason-completion-text">✨ Ти відкрила всі мої причини! ✨</p>
+          <p class="reason-completion-sub">Але насправді причин кохати тебе нескінченність, як і саме моє кохання до тебе ❤️</p>
+        </div>
+
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
           <button id="btn-next-reason" class="btn-romantic" style="padding: 10px 22px; font-size: 0.9rem;">
             <span>Дістати ще одну</span>
@@ -397,7 +429,8 @@
        РОЗДІЛ 4: ФІНАЛЬНИЙ РОЗДІЛ: ЩЕ ДЕЩО ДЛЯ ТЕБЕ… (#view-final)
        ===================================================================== -->
   <section id="view-final" class="standalone-view">
-    <div class="view-nav-bar">
+    <div id="final-dim-overlay" class="final-dim-overlay"></div>
+    <div class="view-nav-bar" style="position: relative; z-index: 5;">
       <button class="btn-back-menu">‹ Повернутися в меню</button>
       <span class="script-text" style="font-size: 1.8rem;">Найпотаємніше...</span>
     </div>
@@ -405,17 +438,26 @@
     <div class="final-view-container">
       <h2 class="final-intro-text">У мене є для тебе ще дещо…</h2>
 
-      <div id="heart-portal" class="heart-portal-wrapper" title="Торкнися серця">
-        <svg class="big-glowing-heart" viewBox="0 0 32 32" fill="currentColor">
-          <path d="M16 28.5C15.6 28.5 15.2 28.3 14.9 28L4.3 17.4C1.6 14.7 1.6 10.3 4.3 7.6C7 4.9 11.4 4.9 14.1 7.6L16 9.5L17.9 7.6C20.6 4.9 25 4.9 27.7 7.6C30.4 10.3 30.4 14.7 27.7 17.4L17.1 28C16.8 28.3 16.4 28.5 16 28.5Z"/>
-        </svg>
-      </div>
-      <p id="heart-touch-hint" class="heart-touch-hint">✨ Торкнися серця... ✨</p>
-
+      <!-- 3. Особисте послання автора (показується першим) -->
       <div id="final-message-card" class="final-message-card">
         <div id="final-message-body" class="final-message-body"></div>
-        <div class="final-signature-highlight">Я тебе кохаю, моя дівчинко ❤️</div>
-        <div class="final-signature-sub">Завжди твій ❤️</div>
+      </div>
+
+      <!-- 4, 5 & 6. Сяюче серце в центрі та його чарівне відкриття -->
+      <div class="heart-climax-area">
+        <div id="heart-portal" class="heart-portal-wrapper" title="Торкнися серця">
+          <svg class="big-glowing-heart" viewBox="0 0 32 32" fill="currentColor">
+            <path d="M16 28.5C15.6 28.5 15.2 28.3 14.9 28L4.3 17.4C1.6 14.7 1.6 10.3 4.3 7.6C7 4.9 11.4 4.9 14.1 7.6L16 9.5L17.9 7.6C20.6 4.9 25 4.9 27.7 7.6C30.4 10.3 30.4 14.7 27.7 17.4L17.1 28C16.8 28.3 16.4 28.5 16 28.5Z"/>
+          </svg>
+        </div>
+        <p id="heart-touch-hint" class="heart-touch-hint">✨ Торкнися мого серця... ✨</p>
+
+        <!-- Фінальна кульмінація розкриття серця -->
+        <div id="final-confession-card" class="final-confession-card hidden">
+          <div class="final-confession-emblem">❤️</div>
+          <div class="final-signature-highlight">Я тебе кохаю, моя дівчинко ❤️</div>
+          <div class="final-signature-sub">Завжди твій ❤️</div>
+        </div>
       </div>
     </div>
   </section>

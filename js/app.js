@@ -1,5 +1,6 @@
 /**
  * Головний контролер сайту «Наша маленька історія»
+ * Агент 2: Повний аудит, стабільність, романтичні анімації та відповідність вимогам
  */
 document.addEventListener('DOMContentLoaded', () => {
   // =========================================================================
@@ -25,8 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     if (screen) {
       screen.classList.remove('hidden');
-      // Примусовий reflow для плавної анімації
-      void screen.offsetWidth;
+      void screen.offsetWidth; // Reflow для запуску CSS-переходів
       screen.classList.add('active');
     }
   }
@@ -38,15 +38,27 @@ document.addEventListener('DOMContentLoaded', () => {
         v.style.display = 'none';
       }
     });
+
     if (viewElement) {
       viewElement.style.display = 'block';
       void viewElement.offsetWidth;
       viewElement.classList.add('active');
       window.scrollTo(0, 0);
+
+      // Якщо відкрито фінальний розділ — підсилюємо ніжні сердечка
+      if (viewElement.id === 'view-final') {
+        if (window.ParticlesManager) {
+          window.ParticlesManager.boostHearts(true);
+        }
+      }
     }
   }
 
   function closeAllViews() {
+    if (window.ParticlesManager) {
+      window.ParticlesManager.boostHearts(false);
+    }
+
     views.forEach(v => {
       if (v) {
         v.classList.remove('active');
@@ -58,8 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 2. Вхід за паролем
-  // Пароль: 120623
+  // 2. Вхід за паролем: 120623
   // =========================================================================
   const passwordInput = document.getElementById('password-input');
   const passwordBtn = document.getElementById('password-btn');
@@ -67,16 +78,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const passwordCard = document.getElementById('password-card');
 
   function checkPassword() {
+    if (!passwordInput) return;
     const entered = passwordInput.value.trim();
     if (entered === '120623') {
-      passwordError.classList.remove('visible');
-      passwordError.textContent = '';
-      
-      // Перехід одразу до конверта
+      if (passwordError) {
+        passwordError.classList.remove('visible');
+        passwordError.textContent = '';
+      }
+      // Прямий перехід до екрану конверта без зайвих вікон привітання
       showScreen(screenEnvelope);
     } else {
-      passwordError.textContent = 'Киця, неправильно 😔 Спробуй ще раз 🥰';
-      passwordError.classList.add('visible');
+      if (passwordError) {
+        passwordError.textContent = 'Киця, неправильно 😔 Спробуй ще раз 🥰';
+        passwordError.classList.add('visible');
+      }
       if (passwordCard) {
         passwordCard.classList.remove('shake');
         void passwordCard.offsetWidth;
@@ -94,16 +109,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 3. Інтерактивний конверт “To My Princess”
+  // 3. Інтерактивний конверт “To My Princess” та Вступний лист
   // =========================================================================
   const envelopeWrapper = document.getElementById('envelope-wrapper');
   const introModal = document.getElementById('intro-letter-modal');
   const introContentEl = document.getElementById('intro-letter-content');
   const btnEnterStory = document.getElementById('btn-enter-story');
 
-  // Завантаження тексту вступного листа
   function loadIntroLetter() {
-    const fallbackText = window.LETTERS_DATA?.intro?.content || 'Моя принцесо... З днем народження!';
+    const fallback = window.LETTERS_DATA?.intro?.content || '';
     fetch('materials/letters/intro-letter.txt')
       .then(res => {
         if (!res.ok) throw new Error('Not found');
@@ -113,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (introContentEl) introContentEl.textContent = text.trim();
       })
       .catch(() => {
-        if (introContentEl) introContentEl.textContent = fallbackText;
+        if (introContentEl) introContentEl.textContent = fallback;
       });
   }
   loadIntroLetter();
@@ -125,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
       envelopeOpened = true;
       envelopeWrapper.classList.add('opened');
 
-      // Через коротку затримку для завершення анімації показуємо лист для зручного читання
+      // Після плавної анімації відкриття конверта показуємо великий лист
       setTimeout(() => {
         if (introModal) introModal.classList.add('active');
       }, 750);
@@ -136,7 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
     btnEnterStory.addEventListener('click', () => {
       if (introModal) introModal.classList.remove('active');
       showScreen(screenMain);
+
+      // Запуск музики після першої взаємодії користувача
       if (window.MusicPlayer) {
+        window.MusicPlayer.play();
         window.MusicPlayer.showFloatingBar();
       }
       window.scrollTo(0, 0);
@@ -144,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 4. Головна сторінка та меню
+  // 4. Головна сторінка: Скрол до хабу та навігація
   // =========================================================================
   const btnScrollHub = document.getElementById('btn-scroll-hub');
   const hubSections = document.getElementById('hub-sections');
@@ -155,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Клік по картках меню
   document.querySelectorAll('[data-open-view]').forEach(card => {
     card.addEventListener('click', () => {
       const viewId = card.getAttribute('data-open-view');
@@ -164,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Кнопки повернення в меню з розділів
   document.querySelectorAll('.btn-back-menu').forEach(btn => {
     btn.addEventListener('click', () => {
       closeAllViews();
@@ -175,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 5. Розділ: «Наші спогади» (Галерея + Лайтбокс з друкуванням)
+  // 5. Розділ: «Наші спогади» (Галерея, Лайтбокс та Повноекранне фото)
   // =========================================================================
   const memoriesGrid = document.getElementById('memories-grid');
   const memoryLightbox = document.getElementById('memory-lightbox');
@@ -187,9 +202,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnPrevMemory = document.getElementById('btn-prev-memory');
   const btnNextMemory = document.getElementById('btn-next-memory');
   const btnCloseLightbox = document.getElementById('btn-close-lightbox');
+  const btnZoomPhoto = document.getElementById('btn-zoom-photo');
+
+  const photoFullscreenModal = document.getElementById('photo-fullscreen-modal');
+  const fullscreenPhotoImg = document.getElementById('fullscreen-photo-img');
+  const btnCloseFullscreenPhoto = document.getElementById('btn-close-fullscreen-photo');
 
   let currentMemoryIndex = 0;
-  const memoriesList = window.MEMORIES_DATA || [];
+  let memoriesList = window.MEMORIES_DATA || [];
+
+  // Спроба підвантажити з materials/personal-texts/memories.json
+  fetch('materials/personal-texts/memories.json')
+    .then(res => {
+      if (!res.ok) throw new Error('Not found');
+      return res.json();
+    })
+    .then(data => {
+      if (Array.isArray(data) && data.length > 0) {
+        memoriesList = data;
+        renderMemoriesGrid();
+      }
+    })
+    .catch(() => {
+      // Fallback вже в memoriesList
+      renderMemoriesGrid();
+    });
 
   function renderMemoriesGrid() {
     if (!memoriesGrid) return;
@@ -198,14 +235,19 @@ document.addEventListener('DOMContentLoaded', () => {
     memoriesList.forEach((item, index) => {
       const card = document.createElement('div');
       card.className = 'memory-thumb-card';
+      const feelingHtml = item.feeling && item.feeling.trim() ? `<p class="memory-thumb-feeling">💭 «${item.feeling}»</p>` : '';
       card.innerHTML = `
         <div class="memory-thumb-img-wrap">
           <img src="${item.photo}" alt="Спогад ${item.id}" class="memory-thumb-img" loading="lazy">
           <span class="memory-thumb-badge">Спогад #${item.id}</span>
         </div>
         <div class="memory-thumb-info">
-          <h4 class="memory-thumb-title">Спогад #${item.id}</h4>
-          <p class="memory-thumb-location">📍 ${item.location || 'Наш момент'}</p>
+          <div class="memory-thumb-header">
+            <h4 class="memory-thumb-title">Спогад #${item.id}</h4>
+            <span class="memory-thumb-location">📍 ${item.location || 'Наш момент'}</span>
+          </div>
+          <p class="memory-thumb-story">${item.story || ''}</p>
+          ${feelingHtml}
         </div>
       `;
       card.addEventListener('click', () => openMemoryLightbox(index));
@@ -220,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (lightboxImg) lightboxImg.src = mem.photo;
     if (lightboxBadge) lightboxBadge.textContent = `Спогад ${mem.id} з ${memoriesList.length}`;
+    
     if (lightboxLocation) {
       if (mem.location) {
         lightboxLocation.textContent = `📍 ${mem.location}`;
@@ -242,30 +285,55 @@ document.addEventListener('DOMContentLoaded', () => {
       memoryLightbox.classList.add('active');
     }
 
-    // Запуск машинописного друку тексту спогаду
+    // Друк тексту спогаду без технічних міток
     if (typewriterText && window.Typewriter) {
-      window.Typewriter.start(typewriterText, mem.story || '', 30);
+      window.Typewriter.start(typewriterText, mem.story || '', 28);
     }
   }
 
   function closeMemoryLightbox() {
     if (window.Typewriter) window.Typewriter.stop();
     if (memoryLightbox) memoryLightbox.classList.remove('active');
+    closeFullscreenPhoto();
+  }
+
+  function openFullscreenPhoto() {
+    if (!memoriesList || memoriesList.length === 0) return;
+    const mem = memoriesList[currentMemoryIndex];
+    if (fullscreenPhotoImg) fullscreenPhotoImg.src = mem.photo;
+    if (photoFullscreenModal) photoFullscreenModal.classList.remove('hidden');
+  }
+
+  function closeFullscreenPhoto() {
+    if (photoFullscreenModal) photoFullscreenModal.classList.add('hidden');
   }
 
   if (btnCloseLightbox) btnCloseLightbox.addEventListener('click', closeMemoryLightbox);
   if (btnPrevMemory) btnPrevMemory.addEventListener('click', () => openMemoryLightbox(currentMemoryIndex - 1));
   if (btnNextMemory) btnNextMemory.addEventListener('click', () => openMemoryLightbox(currentMemoryIndex + 1));
+  
+  if (btnZoomPhoto) btnZoomPhoto.addEventListener('click', openFullscreenPhoto);
+  if (lightboxImg) lightboxImg.addEventListener('click', openFullscreenPhoto);
+  if (btnCloseFullscreenPhoto) btnCloseFullscreenPhoto.addEventListener('click', closeFullscreenPhoto);
+  if (photoFullscreenModal) {
+    photoFullscreenModal.addEventListener('click', (e) => {
+      if (e.target !== fullscreenPhotoImg) closeFullscreenPhoto();
+    });
+  }
 
-  // Клік на фон лайтбоксу для закриття
   if (memoryLightbox) {
     memoryLightbox.addEventListener('click', (e) => {
       if (e.target === memoryLightbox) closeMemoryLightbox();
     });
   }
 
-  // Керування клавіатурою для лайтбоксу
   document.addEventListener('keydown', (e) => {
+    if (photoFullscreenModal && !photoFullscreenModal.classList.contains('hidden')) {
+      if (e.key === 'Escape') {
+        closeFullscreenPhoto();
+        return;
+      }
+    }
     if (!memoryLightbox || !memoryLightbox.classList.contains('active')) return;
     if (e.key === 'Escape') closeMemoryLightbox();
     if (e.key === 'ArrowLeft') openMemoryLightbox(currentMemoryIndex - 1);
@@ -276,18 +344,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // =========================================================================
   // 6. Розділ: «365 причин, чому я тебе кохаю»
+  // Вимоги: без повторів до перегляду всіх, перегляд відкритих, завершення
   // =========================================================================
   const loveJar = document.getElementById('love-jar');
   const btnPickReason = document.getElementById('btn-pick-reason');
+  const btnViewOpenedReasons = document.getElementById('btn-view-opened-reasons');
+  const reasonsOpenedCountEl = document.getElementById('reasons-opened-count');
+  const reasonsTotalCountEl = document.getElementById('reasons-total-count');
+
   const reasonModal = document.getElementById('reason-modal');
   const reasonNumberEl = document.getElementById('reason-number');
   const reasonTextEl = document.getElementById('reason-text');
   const btnNextReason = document.getElementById('btn-next-reason');
   const btnCloseReason = document.getElementById('btn-close-reason');
+  const reasonHistoryNav = document.getElementById('reason-history-nav');
+  const btnReasonPrev = document.getElementById('btn-reason-prev');
+  const btnReasonNext = document.getElementById('btn-reason-next');
+  const reasonHistoryPos = document.getElementById('reason-history-pos');
+  const reasonCompletionBanner = document.getElementById('reason-completion-banner');
 
   let activeReasonsList = window.REASONS_DATA || [];
+  let unviewedIndices = [];
+  let viewedHistory = [];
+  let currentHistoryIndex = -1;
 
-  // Спроба підвантажити з materials/reasons/reasons.json
+  function initReasonsPool() {
+    unviewedIndices = activeReasonsList.map((_, i) => i);
+    viewedHistory = [];
+    currentHistoryIndex = -1;
+    updateReasonsUI();
+  }
+
+  function updateReasonsUI() {
+    if (reasonsTotalCountEl) reasonsTotalCountEl.textContent = activeReasonsList.length;
+    if (reasonsOpenedCountEl) reasonsOpenedCountEl.textContent = viewedHistory.length;
+    if (btnViewOpenedReasons) {
+      if (viewedHistory.length > 0) {
+        btnViewOpenedReasons.classList.remove('hidden');
+      } else {
+        btnViewOpenedReasons.classList.add('hidden');
+      }
+    }
+  }
+
+  // Завантаження з materials/reasons/reasons.json
   fetch('materials/reasons/reasons.json')
     .then(res => {
       if (!res.ok) throw new Error('Not found');
@@ -296,31 +396,118 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       if (Array.isArray(data) && data.length > 0) {
         activeReasonsList = data;
+        initReasonsPool();
       }
     })
     .catch(() => {
-      // Використовується fallback з window.REASONS_DATA
+      initReasonsPool();
     });
 
-  function showRandomReason() {
+  function drawNextReason() {
     if (!activeReasonsList || activeReasonsList.length === 0) return;
-    const randomIndex = Math.floor(Math.random() * activeReasonsList.length);
-    const item = activeReasonsList[randomIndex];
+
+    if (unviewedIndices.length > 0) {
+      // Вибираємо випадкову причину із пулу ще не бачених
+      const randomPos = Math.floor(Math.random() * unviewedIndices.length);
+      const chosenIndex = unviewedIndices.splice(randomPos, 1)[0];
+      viewedHistory.push(chosenIndex);
+      currentHistoryIndex = viewedHistory.length - 1;
+      displayReasonAtHistory(currentHistoryIndex);
+      updateReasonsUI();
+    } else {
+      // Усі доступні причини вже переглянуто — показуємо останню із завершальним посланням
+      if (viewedHistory.length > 0) {
+        currentHistoryIndex = viewedHistory.length - 1;
+        displayReasonAtHistory(currentHistoryIndex, true);
+      }
+    }
+  }
+
+  function displayReasonAtHistory(historyIdx, forceShowCompletion = false) {
+    if (historyIdx < 0 || historyIdx >= viewedHistory.length) return;
+    currentHistoryIndex = historyIdx;
+    const reasonIndex = viewedHistory[historyIdx];
+    const item = activeReasonsList[reasonIndex];
 
     if (reasonNumberEl) {
-      reasonNumberEl.textContent = `Причина #${item.id || (randomIndex + 1)}`;
+      reasonNumberEl.textContent = `Причина #${item.id || (reasonIndex + 1)}`;
     }
     if (reasonTextEl) {
       reasonTextEl.textContent = item.text || item;
     }
+
+    // Навігація відкритих записок
+    if (reasonHistoryNav) {
+      if (viewedHistory.length > 1) {
+        reasonHistoryNav.classList.remove('hidden');
+        if (reasonHistoryPos) {
+          reasonHistoryPos.textContent = `${historyIdx + 1} з ${viewedHistory.length}`;
+        }
+        if (btnReasonPrev) btnReasonPrev.disabled = (historyIdx === 0);
+        if (btnReasonNext) btnReasonNext.disabled = (historyIdx === viewedHistory.length - 1);
+      } else {
+        reasonHistoryNav.classList.add('hidden');
+      }
+    }
+
+    // Повідомлення про відкриття всіх записок
+    if (reasonCompletionBanner) {
+      const allOpened = unviewedIndices.length === 0 || forceShowCompletion;
+      if (allOpened) {
+        reasonCompletionBanner.classList.remove('hidden');
+        if (btnNextReason) {
+          btnNextReason.innerHTML = '<span>Почати заново ❤️</span>';
+        }
+      } else {
+        reasonCompletionBanner.classList.add('hidden');
+        if (btnNextReason) {
+          btnNextReason.innerHTML = '<span>Дістати ще одну ✨</span>';
+        }
+      }
+    }
+
     if (reasonModal) {
       reasonModal.classList.add('active');
     }
   }
 
-  if (loveJar) loveJar.addEventListener('click', showRandomReason);
-  if (btnPickReason) btnPickReason.addEventListener('click', showRandomReason);
-  if (btnNextReason) btnNextReason.addEventListener('click', showRandomReason);
+  function handleNextReasonBtnClick() {
+    if (unviewedIndices.length === 0) {
+      // Перезапуск пулу для повторного витягування
+      initReasonsPool();
+      drawNextReason();
+    } else {
+      drawNextReason();
+    }
+  }
+
+  if (loveJar) loveJar.addEventListener('click', drawNextReason);
+  if (btnPickReason) btnPickReason.addEventListener('click', drawNextReason);
+  if (btnViewOpenedReasons) {
+    btnViewOpenedReasons.addEventListener('click', () => {
+      if (viewedHistory.length > 0) {
+        displayReasonAtHistory(currentHistoryIndex >= 0 ? currentHistoryIndex : viewedHistory.length - 1);
+      }
+    });
+  }
+  if (btnNextReason) btnNextReason.addEventListener('click', handleNextReasonBtnClick);
+
+  if (btnReasonPrev) {
+    btnReasonPrev.addEventListener('click', () => {
+      if (currentHistoryIndex > 0) {
+        displayReasonAtHistory(currentHistoryIndex - 1);
+      }
+    });
+  }
+
+  if (btnReasonNext) {
+    btnReasonNext.addEventListener('click', () => {
+      if (currentHistoryIndex < viewedHistory.length - 1) {
+        displayReasonAtHistory(currentHistoryIndex + 1);
+      }
+    });
+  }
+
   if (btnCloseReason) {
     btnCloseReason.addEventListener('click', () => {
       if (reasonModal) reasonModal.classList.remove('active');
@@ -334,6 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // =========================================================================
   // 7. Розділ: «Відкрий, коли…» (5 листів)
+  // Автентичні тексти, збереження структури, емодзі та абзаців
   // =========================================================================
   const openWhenModal = document.getElementById('open-when-modal');
   const openWhenTitle = document.getElementById('open-when-modal-title');
@@ -350,17 +538,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (openWhenTitle) openWhenTitle.textContent = letterData.title;
 
-      // Спроба прочитати окремий файл з materials/letters/
       fetch(letterData.file)
         .then(res => {
           if (!res.ok) throw new Error('Not found');
           return res.text();
         })
         .then(text => {
-          if (openWhenBody) openWhenBody.textContent = text.trim();
+          let cleaned = text.trim();
+          // Очищаємо лише технічний символ markdown заголовка '# ', якщо він присутній
+          cleaned = cleaned.replace(/^#\s+/gm, '');
+          if (openWhenBody) openWhenBody.textContent = cleaned;
         })
         .catch(() => {
-          if (openWhenBody) openWhenBody.textContent = letterData.content;
+          let fallbackCleaned = (letterData.content || '').replace(/^#\s+/gm, '');
+          if (openWhenBody) openWhenBody.textContent = fallbackCleaned;
         });
 
       if (openWhenModal) openWhenModal.classList.add('active');
@@ -379,16 +570,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 8. Фінальний розділ: «Ще дещо для тебе…»
-  // Серце, що пульсує і розкриває фінальне послання
+  // 8. Секретний фінал: «Ще дещо для тебе…»
+  // Послідовність:
+  // 1. Екран темніє
+  // 2. З'являються ніжні сердечка
+  // 3. Особисте послання
+  // 4. Велике сяюче серце в центрі
+  // 5. Відкриття серця
+  // 6. Напис «Я тебе кохаю, моя дівчинко ❤️» та «Завжди твій ❤️»
   // =========================================================================
   const heartPortal = document.getElementById('heart-portal');
   const heartTouchHint = document.getElementById('heart-touch-hint');
-  const finalMessageCard = document.getElementById('final-message-card');
   const finalMessageBody = document.getElementById('final-message-body');
+  const finalConfessionCard = document.getElementById('final-confession-card');
 
   function loadFinalMessage() {
-    const fallbackFinal = window.LETTERS_DATA?.final?.content || `Моя кохана, кожен день, проведений поруч із тобою — це справжнє диво. Дякую тобі за твою ніжність, за твою чарівну посмішку і за все те світло, яке ти принесла в моє життя. Я щасливий бути поруч із тобою і розділяти нашу спільну історію крок за кроком.`;
+    const fallbackFinal = window.LETTERS_DATA?.final?.content || `Моя Киця…
+
+Якби я міг подарувати тобі щось особливе, то подарував би можливість хоча б на мить побачити себе моїми очима. Тоді ти зрозуміла б, наскільки ти для мене дорога.
+
+Дякую, що ти є в моєму житті. Дякую за ці три роки, за всі наші моменти й за те, що саме ти — моя кохана дівчинка.
+
+І пам'ятай: серед мільйонів людей я щасливий, що зустрів саме тебе.`;
 
     fetch('materials/letters/final-message.txt')
       .then(res => {
@@ -397,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .then(text => {
         let cleaned = text.trim();
-        // Запобігаємо дублюванню підпису, якщо користувач уже додав його в кінець файлу
+        // Відокремлюємо фінальні слова зізнання та підпис для кульмінаційного моменту розкриття серця
         cleaned = cleaned.replace(/Я тебе кохаю,\s*моя дівчинко\s*❤️?/gi, '')
                          .replace(/Завжди твій\s*❤️?/gi, '')
                          .trim();
@@ -409,18 +612,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   loadFinalMessage();
 
+  let heartOpened = false;
   if (heartPortal) {
     heartPortal.addEventListener('click', () => {
-      heartPortal.style.transform = 'scale(1.35)';
-      heartPortal.style.opacity = '0';
-      if (heartTouchHint) heartTouchHint.style.display = 'none';
+      if (heartOpened) return;
+      heartOpened = true;
+
+      // 5. Анімація чарівного розкриття серця
+      heartPortal.classList.add('opened');
+      if (heartTouchHint) heartTouchHint.style.opacity = '0';
 
       setTimeout(() => {
         heartPortal.style.display = 'none';
-        if (finalMessageCard) {
-          finalMessageCard.classList.add('revealed');
+        if (heartTouchHint) heartTouchHint.style.display = 'none';
+
+        // 6. Поява надпису та підпису в сяйві
+        if (finalConfessionCard) {
+          finalConfessionCard.classList.remove('hidden');
         }
-      }, 500);
+      }, 700);
     });
   }
 });

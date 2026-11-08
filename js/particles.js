@@ -25,6 +25,8 @@
     return Math.random() * (max - min) + min;
   }
 
+  let boostedHearts = false;
+
   function initParticles() {
     stars.length = 0;
     hearts.length = 0;
@@ -40,19 +42,28 @@
       });
     }
 
-    for (let i = 0; i < HEART_COUNT; i++) {
+    const currentHeartCount = boostedHearts ? Math.min(36, Math.floor(width / 30)) : HEART_COUNT;
+
+    for (let i = 0; i < currentHeartCount; i++) {
       hearts.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        size: randomRange(8, 16),
-        speedY: randomRange(0.3, 0.8),
-        speedX: randomRange(-0.2, 0.2),
-        alpha: randomRange(0.15, 0.45),
+        size: randomRange(8, 18),
+        speedY: randomRange(0.3, 0.9),
+        speedX: randomRange(-0.25, 0.25),
+        alpha: randomRange(0.18, 0.5),
         oscillation: Math.random() * Math.PI * 2,
         oscillationSpeed: randomRange(0.01, 0.03)
       });
     }
   }
+
+  window.ParticlesManager = {
+    boostHearts: function(enable) {
+      boostedHearts = !!enable;
+      initParticles();
+    }
+  };
 
   function drawHeart(ctx, x, y, size, alpha) {
     ctx.save();
