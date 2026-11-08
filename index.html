@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Наша маленька історія</title>
+  
+  <!-- Google Fonts: Роскошна романтична типографіка -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Стилі -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+  <!-- Фон: Канвас із зорями та мерехтінням -->
+  <canvas id="canvas-particles"></canvas>
+  <div class="cinematic-vignette"></div>
+
+  <!-- Плаваючий верхній міні-програвач музики -->
+  <div id="floating-music-bar" class="floating-music-bar hidden">
+    <div id="mini-disc" class="mini-disc"></div>
+    <div class="mini-music-info">
+      <span class="mini-music-title">Adele — Lovesong</span>
+      <span id="mini-music-status" class="mini-music-status">Пауза</span>
+    </div>
+    <button id="mini-btn-play" class="mini-btn-play" aria-label="Відтворити музику">▶</button>
+  </div>
+
+  <!-- =====================================================================
+       1. ЕКРАН ПАРОЛЮ
+       ===================================================================== -->
+  <section id="screen-password" class="app-screen active">
+    <div id="password-card" class="password-card">
+      <div class="password-emblem">❤️</div>
+      <h1 class="password-title">Наша маленька історія</h1>
+      <p class="password-subtitle">Введи наш особливий пароль, щоб відкрити цей світ</p>
+      
+      <div class="password-input-group">
+        <input 
+          type="password" 
+          id="password-input" 
+          class="password-input" 
+          placeholder="ДДММРР" 
+          maxlength="10"
+          autocomplete="off"
+          autofocus
+        >
+      </div>
+
+      <button id="password-btn" class="btn-romantic">
+        <span>Відкрити</span>
+        <span>✨</span>
+      </button>
+
+      <div id="password-error" class="password-error"></div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       2. ЕКРАН КОНВЕРТА (“To My Princess”)
+       ===================================================================== -->
+  <section id="screen-envelope" class="app-screen hidden">
+    <div class="envelope-wrapper" id="envelope-wrapper" title="Натисни, щоб відкрити конверт">
+      <div class="envelope-box">
+        <div class="envelope-flap"></div>
+        <div class="wax-seal">
+          <span class="wax-seal-heart">💌</span>
+        </div>
+        <div class="envelope-pocket"></div>
+        <div class="envelope-inscription">To My Princess</div>
+      </div>
+    </div>
+    <p class="envelope-hint">✨ Натисни на конверт, щоб відкрити ✨</p>
+  </section>
+
+  <!-- Модальне вікно для прочитання вступного листа -->
+  <div id="intro-letter-modal" class="letter-modal-backdrop">
+    <div class="parchment-letter">
+      <div class="letter-header">
+        <h2 class="letter-header-title">Моя принцесо...</h2>
+      </div>
+      <div id="intro-letter-content" class="letter-body"></div>
+      <div class="letter-footer">
+        <button id="btn-enter-story" class="btn-romantic">
+          <span>Поринути в нашу історію</span>
+          <span>❤️</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       3. ГОЛОВНА СТОРІНКА ТА ХАБ РОЗДІЛІВ
+       ===================================================================== -->
+  <main id="screen-main" class="app-screen hidden">
+    
+    <!-- Перший екран (Hero) -->
+    <section class="hero-section">
+      <img src="materials/photos/photo-main.jpg" alt="Ми разом" class="hero-bg-photo" id="hero-photo">
+      <div class="hero-overlay"></div>
+      
+      <div class="hero-content">
+        <div class="hero-date-badge">
+          <span>✨</span>
+          <span>12.06.2023</span>
+          <span>✨</span>
+        </div>
+
+        <h1 class="hero-title">
+          Моя дівчинка, цей маленький світ створений лише для тебе
+        </h1>
+
+        <!-- Статичний лічильник за вимогами: 1245 днів разом -->
+        <div class="hero-counter-container">
+          <div class="hero-counter-number">1245</div>
+          <span class="hero-counter-label">днів разом</span>
+        </div>
+
+        <button id="btn-scroll-hub" class="btn-romantic">
+          <span>Поринути в нашу історію</span>
+          <span>↓</span>
+        </button>
+
+        <!-- Вініловий програвач: Adele — Lovesong -->
+        <div class="turntable-wrapper">
+          <div class="turntable-inner">
+            <div class="turntable-deck">
+              <div id="vinyl-record" class="vinyl-record">
+                <div class="vinyl-grooves"></div>
+                <div class="vinyl-center-label">❤️</div>
+              </div>
+              <div id="turntable-tonearm" class="turntable-tonearm">
+                <div class="tonearm-head">
+                  <div class="tonearm-needle"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="turntable-info">
+              <span class="track-artist">Adele</span>
+              <h3 class="track-name">Lovesong</h3>
+              
+              <div id="track-progress-bar" class="track-progress-bar" title="Перемотати">
+                <div id="track-progress-fill" class="track-progress-fill"></div>
+              </div>
+
+              <div class="track-controls">
+                <span id="track-time-current" class="track-time">0:00</span>
+                
+                <div class="track-buttons">
+                  <button id="btn-play-main" class="btn-player-action btn-play-main" aria-label="Play / Pause">▶</button>
+                </div>
+
+                <span id="track-time-total" class="track-time">--:--</span>
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px;">
+                <span id="track-status-text" class="track-time">Натисни Play для відтворення</span>
+                <div class="volume-control">
+                  <span style="font-size: 11px; color: var(--text-dim);">🔊</span>
+                  <input type="range" id="player-volume" class="volume-slider" min="0" max="1" step="0.05" value="0.8">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Хаб меню розділів -->
+    <section id="hub-sections" class="hub-section">
+      <div class="section-intro-header">
+        <h2 class="section-intro-title">Наша подорож</h2>
+        <p class="section-intro-sub">Обери розділ, у який хочеш зазирнути:</p>
+      </div>
+
+      <div class="menu-cards-grid">
+        <!-- 1. Наші спогади -->
+        <div class="menu-card" data-open-view="view-memories">
+          <div class="menu-card-icon">📸</div>
+          <h3 class="menu-card-title">Наші спогади</h3>
+          <p class="menu-card-desc">10 особливих моментів, збережених у наших серцях назавжди.</p>
+          <span class="menu-card-action">Переглянути спогади →</span>
+        </div>
+
+        <!-- 2. 365 причин -->
+        <div class="menu-card" data-open-view="view-reasons">
+          <div class="menu-card-icon">✨</div>
+          <h3 class="menu-card-title">365 причин, чому я тебе кохаю</h3>
+          <p class="menu-card-desc">Магічна баночка ніжних записок на кожен день року.</p>
+          <span class="menu-card-action">Відкрити записку →</span>
+        </div>
+
+        <!-- 3. Відкрий, коли… -->
+        <div class="menu-card" data-open-view="view-open-when">
+          <div class="menu-card-icon">💌</div>
+          <h3 class="menu-card-title">Відкрий, коли…</h3>
+          <p class="menu-card-desc">Особливі листи підтримки, обіймів та любові для будь-якого настрою.</p>
+          <span class="menu-card-action">Обрати лист →</span>
+        </div>
+
+        <!-- 4. Ще дещо для тебе… -->
+        <div class="menu-card" data-open-view="view-final">
+          <div class="menu-card-icon">❤️</div>
+          <h3 class="menu-card-title">Ще дещо для тебе…</h3>
+          <p class="menu-card-desc">Найтепліше таємне послання, приховане в глибині мого серця.</p>
+          <span class="menu-card-action">Торкнутися серця →</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       РОЗДІЛ 1: НАШІ СПОГАДИ (#view-memories)
+       ===================================================================== -->
+  <section id="view-memories" class="standalone-view">
+    <div class="view-nav-bar">
+      <button class="btn-back-menu">‹ Повернутися в меню</button>
+      <span class="script-text" style="font-size: 1.8rem;">Спогади, що гріють душу</span>
+    </div>
+
+    <div class="section-intro-header">
+      <h2 class="section-intro-title">Наші спогади</h2>
+      <p class="section-intro-sub">Кожна мить поруч із тобою — безцінна скарбниця</p>
+    </div>
+
+    <div id="memories-grid" class="memories-grid"></div>
+
+    <!-- Лайтбокс окремого спогаду з ефектом друкування -->
+    <div id="memory-lightbox" class="memory-lightbox">
+      <div class="lightbox-content-box">
+        <button id="btn-close-lightbox" class="lightbox-close-btn" aria-label="Закрити">✕</button>
+        
+        <div class="lightbox-image-side">
+          <img id="lightbox-img" src="" alt="Спогад" class="lightbox-img">
+        </div>
+
+        <div class="lightbox-text-side">
+          <div>
+            <div class="lightbox-header-meta">
+              <span id="lightbox-badge" class="lightbox-badge">Спогад 1 з 10</span>
+              <span id="lightbox-location" class="lightbox-location">📍 Київ</span>
+            </div>
+
+            <div class="typewriter-container">
+              <span id="typewriter-text" class="typewriter-text"></span>
+              <span class="typewriter-cursor"></span>
+            </div>
+
+            <div id="lightbox-feeling" class="lightbox-feeling-box"></div>
+          </div>
+
+          <div class="lightbox-controls">
+            <button id="btn-prev-memory" class="lightbox-nav-btn">❮ Попередній</button>
+            <button id="btn-next-memory" class="lightbox-nav-btn">Наступний ❯</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       РОЗДІЛ 2: 365 ПРИЧИН (#view-reasons)
+       ===================================================================== -->
+  <section id="view-reasons" class="standalone-view">
+    <div class="view-nav-bar">
+      <button class="btn-back-menu">‹ Повернутися в меню</button>
+      <span class="script-text" style="font-size: 1.8rem;">Моє кохання у словах</span>
+    </div>
+
+    <div class="reasons-view-container">
+      <div class="section-intro-header">
+        <h2 class="section-intro-title">365 причин, чому я тебе кохаю</h2>
+        <p class="section-intro-sub">Торкнися баночки, щоб дістати теплу записку</p>
+      </div>
+
+      <!-- Інтерактивна баночка кохання -->
+      <div id="love-jar" class="love-jar-wrapper" title="Натисни на баночку">
+        <div class="love-jar-lid"></div>
+        <div class="love-jar-ribbon"></div>
+        <div class="love-jar-glass">
+          <div class="floating-notes-inside">
+            <div class="mini-note-chip" style="top: 30%; left: 20%;"></div>
+            <div class="mini-note-chip" style="top: 55%; left: 60%; transform: rotate(15deg);"></div>
+            <div class="mini-note-chip" style="top: 40%; left: 45%; transform: rotate(-25deg);"></div>
+            <div class="mini-note-chip" style="top: 70%; left: 25%; transform: rotate(10deg);"></div>
+            <div class="mini-note-chip" style="top: 25%; left: 65%; transform: rotate(-10deg);"></div>
+          </div>
+          <span style="font-size: 34px; z-index: 5;">💌</span>
+        </div>
+      </div>
+
+      <button id="btn-pick-reason" class="btn-romantic">
+        <span>Дістати записку з баночки</span>
+        <span>✨</span>
+      </button>
+    </div>
+
+    <!-- Модалка розкритої записки -->
+    <div id="reason-modal" class="reason-note-modal">
+      <div class="unfolded-note">
+        <span id="reason-number" class="reason-number">Причина #1</span>
+        <p id="reason-text" class="reason-text"></p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button id="btn-next-reason" class="btn-romantic" style="padding: 10px 22px; font-size: 0.9rem;">
+            <span>Дістати ще одну</span>
+            <span>✨</span>
+          </button>
+          <button id="btn-close-reason" class="btn-romantic btn-secondary" style="padding: 10px 22px; font-size: 0.9rem;">
+            <span>Сховати записку</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       РОЗДІЛ 3: ВІДКРИЙ, КОЛИ… (#view-open-when)
+       ===================================================================== -->
+  <section id="view-open-when" class="standalone-view">
+    <div class="view-nav-bar">
+      <button class="btn-back-menu">‹ Повернутися в меню</button>
+      <span class="script-text" style="font-size: 1.8rem;">Завжди поруч із тобою</span>
+    </div>
+
+    <div class="section-intro-header">
+      <h2 class="section-intro-title">Відкрий, коли…</h2>
+      <p class="section-intro-sub">Листи, які зігріють твоє серце у будь-який момент</p>
+    </div>
+
+    <div class="open-when-grid">
+      <!-- 1 -->
+      <div class="envelope-card" data-letter-id="when-miss-me">
+        <div class="envelope-card-stamp">✈️</div>
+        <h3 class="envelope-card-title">Відкрий, коли сумуєш за мною</h3>
+        <p class="envelope-card-preview">Коли відстань здається занадто великою...</p>
+        <span class="envelope-card-action">Читати листа 💌</span>
+      </div>
+
+      <!-- 2 -->
+      <div class="envelope-card" data-letter-id="when-sad">
+        <div class="envelope-card-stamp">🌧️</div>
+        <h3 class="envelope-card-title">Відкрий, коли тобі сумно</h3>
+        <p class="envelope-card-preview">Коли на душі хмаринки і хочеться підтримки...</p>
+        <span class="envelope-card-action">Читати листа 💌</span>
+      </div>
+
+      <!-- 3 -->
+      <div class="envelope-card" data-letter-id="when-cant-sleep">
+        <div class="envelope-card-stamp">🌙</div>
+        <h3 class="envelope-card-title">Відкрий, коли не можеш заснути</h3>
+        <p class="envelope-card-preview">Для ніжних, затишних і солодких снів...</p>
+        <span class="envelope-card-action">Читати листа 💌</span>
+      </div>
+
+      <!-- 4 -->
+      <div class="envelope-card" data-letter-id="when-we-quarrel">
+        <div class="envelope-card-stamp">🕊️</div>
+        <h3 class="envelope-card-title">Відкрий, коли ми посварилися</h3>
+        <p class="envelope-card-preview">Пам'ятай: ти дорожча за все на світі...</p>
+        <span class="envelope-card-action">Читати листа 💌</span>
+      </div>
+
+      <!-- 5 -->
+      <div class="envelope-card" data-letter-id="when-need-hug">
+        <div class="envelope-card-stamp">🫂</div>
+        <h3 class="envelope-card-title">Відкрий, коли хочеш відчути мої обійми</h3>
+        <p class="envelope-card-preview">Мої руки завжди міцно обіймають тебе...</p>
+        <span class="envelope-card-action">Читати листа 💌</span>
+      </div>
+    </div>
+
+    <!-- Модалка читання листа "Відкрий коли" -->
+    <div id="open-when-modal" class="letter-modal-backdrop">
+      <div class="parchment-letter">
+        <div class="letter-header">
+          <h2 id="open-when-modal-title" class="letter-header-title" style="font-size: 2.2rem;"></h2>
+        </div>
+        <div id="open-when-modal-body" class="letter-body"></div>
+        <div class="letter-footer">
+          <button id="btn-close-open-when" class="btn-romantic">
+            <span>Зберегти в серці</span>
+            <span>❤️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       РОЗДІЛ 4: ФІНАЛЬНИЙ РОЗДІЛ: ЩЕ ДЕЩО ДЛЯ ТЕБЕ… (#view-final)
+       ===================================================================== -->
+  <section id="view-final" class="standalone-view">
+    <div class="view-nav-bar">
+      <button class="btn-back-menu">‹ Повернутися в меню</button>
+      <span class="script-text" style="font-size: 1.8rem;">Найпотаємніше...</span>
+    </div>
+
+    <div class="final-view-container">
+      <h2 class="final-intro-text">У мене є для тебе ще дещо…</h2>
+
+      <div id="heart-portal" class="heart-portal-wrapper" title="Торкнися серця">
+        <svg class="big-glowing-heart" viewBox="0 0 32 32" fill="currentColor">
+          <path d="M16 28.5C15.6 28.5 15.2 28.3 14.9 28L4.3 17.4C1.6 14.7 1.6 10.3 4.3 7.6C7 4.9 11.4 4.9 14.1 7.6L16 9.5L17.9 7.6C20.6 4.9 25 4.9 27.7 7.6C30.4 10.3 30.4 14.7 27.7 17.4L17.1 28C16.8 28.3 16.4 28.5 16 28.5Z"/>
+        </svg>
+      </div>
+      <p id="heart-touch-hint" class="heart-touch-hint">✨ Торкнися серця... ✨</p>
+
+      <div id="final-message-card" class="final-message-card">
+        <div id="final-message-body" class="final-message-body"></div>
+        <div class="final-signature-highlight">Я тебе кохаю, моя дівчинко ❤️</div>
+        <div class="final-signature-sub">Завжди твій ❤️</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Скрипти сайту -->
+  <script src="js/data/memories.js"></script>
+  <script src="js/data/letters.js"></script>
+  <script src="js/data/reasons.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/music.js"></script>
+  <script src="js/typewriter.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1455 @@
+/* ==========================================================================
+   КОМПОНЕНТИ ІНТЕРФЕЙСУ ТА ЕКРАНИ
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. ЕКРАН ПАРОЛЮ (#screen-password)
+   -------------------------------------------------------------------------- */
+#screen-password {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.password-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  padding: 44px 36px;
+  text-align: center;
+  box-shadow: var(--glow-soft), 0 0 40px rgba(152, 23, 46, 0.25);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInDown 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.password-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent-ruby), var(--accent-gold), transparent);
+}
+
+.password-emblem {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(152, 23, 46, 0.8) 0%, rgba(35, 12, 18, 0.9) 100%);
+  border: 1px solid var(--border-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--accent-gold);
+  box-shadow: 0 0 25px rgba(229, 184, 105, 0.25);
+  animation: gentlePulse 3s infinite ease-in-out;
+}
+
+.password-title {
+  font-size: 2.1rem;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #fff 30%, var(--accent-rose) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.password-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  font-weight: 300;
+}
+
+.password-input-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.password-input {
+  width: 100%;
+  background: rgba(10, 5, 8, 0.85);
+  border: 1px solid rgba(255, 117, 140, 0.25);
+  border-radius: 50px;
+  padding: 16px 24px;
+  color: #fff;
+  font-size: 1.15rem;
+  text-align: center;
+  letter-spacing: 0.25em;
+  font-family: inherit;
+  transition: var(--transition-smooth);
+  outline: none;
+}
+
+.password-input:focus {
+  border-color: var(--accent-rose);
+  box-shadow: 0 0 20px rgba(255, 117, 140, 0.35);
+  background: rgba(18, 8, 14, 0.95);
+}
+
+.password-input::placeholder {
+  letter-spacing: normal;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+.password-error {
+  min-height: 28px;
+  margin-top: 10px;
+  font-size: 0.92rem;
+  color: #ff7b92;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.password-error.visible {
+  opacity: 1;
+}
+
+.shake {
+  animation: shakeX 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* --------------------------------------------------------------------------
+   2. ЕКРАН КОНВЕРТА (#screen-envelope)
+   -------------------------------------------------------------------------- */
+#screen-envelope {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  perspective: 1200px;
+}
+
+.envelope-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  height: 340px;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: transform 0.5s ease;
+}
+
+.envelope-wrapper:hover {
+  transform: translateY(-5px);
+}
+
+.envelope-box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(145deg, #4d0a16 0%, #26050b 100%);
+  border: 1px solid rgba(229, 184, 105, 0.35);
+  border-radius: 12px;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), 0 0 30px rgba(116, 17, 34, 0.4);
+  overflow: visible;
+}
+
+/* Клапан конверта */
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  border-left: 260px solid transparent;
+  border-right: 260px solid transparent;
+  border-top: 170px solid #5e0d1c;
+  transform-origin: top center;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s 0.4s;
+  z-index: 5;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+}
+
+@media (max-width: 560px) {
+  .envelope-wrapper {
+    height: 280px;
+  }
+  .envelope-flap {
+    border-left-width: 45vw;
+    border-right-width: 45vw;
+    border-top-width: 140px;
+  }
+}
+
+.envelope-pocket {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-left: 260px solid #380710;
+  border-right: 260px solid #380710;
+  border-bottom: 180px solid #420813;
+  border-top: 160px solid transparent;
+  border-radius: 0 0 12px 12px;
+  z-index: 4;
+  pointer-events: none;
+}
+
+@media (max-width: 560px) {
+  .envelope-pocket {
+    border-left-width: 45vw;
+    border-right-width: 45vw;
+    border-bottom-width: 150px;
+    border-top-width: 130px;
+  }
+}
+
+/* Сургучна печатка */
+.wax-seal {
+  position: absolute;
+  top: 145px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  background: radial-gradient(circle, #a1132a 0%, #520511 100%);
+  border: 2px solid var(--accent-gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7), 0 0 20px rgba(229, 184, 105, 0.4);
+  z-index: 6;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.wax-seal-heart {
+  font-size: 24px;
+  color: var(--accent-gold-light);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+/* Напис на конверті: обов'язково “To My Princess” */
+.envelope-inscription {
+  position: absolute;
+  bottom: 35px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 5;
+  font-family: var(--font-script);
+  font-size: 2.4rem;
+  color: var(--accent-gold);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(229, 184, 105, 0.4);
+  pointer-events: none;
+}
+
+/* Підказка натиснути */
+.envelope-hint {
+  margin-top: 30px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: pulseOpacity 2s infinite ease-in-out;
+}
+
+/* Лист всередині конверта */
+.envelope-letter {
+  position: absolute;
+  top: 15px;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+  background: #fdfaf6;
+  color: #2b1d1f;
+  border-radius: 8px;
+  padding: 30px 24px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), z-index 0.1s 0.4s;
+  overflow-y: auto;
+  opacity: 0;
+}
+
+/* Стан відкриття конверта */
+.envelope-wrapper.opened .envelope-flap {
+  transform: rotateX(180deg);
+  z-index: 1;
+}
+
+.envelope-wrapper.opened .wax-seal {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+
+.envelope-wrapper.opened .envelope-letter {
+  opacity: 1;
+  transform: translateY(-90px) scale(1.02);
+  z-index: 10;
+  height: auto;
+  max-height: 480px;
+}
+
+/* Модальне вікно прочитання листа (після розкриття) */
+.letter-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 2, 4, 0.88);
+  backdrop-filter: blur(12px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.letter-modal-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.parchment-letter {
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
+  background: #fbf7f0 radial-gradient(circle at 50% 50%, #fff 60%, #f1e7d8 100%);
+  color: #261619;
+  border: 1px solid #d4af37;
+  border-radius: 16px;
+  padding: 40px 36px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.3);
+  overflow-y: auto;
+  position: relative;
+  transform: scale(0.92);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.letter-modal-backdrop.active .parchment-letter {
+  transform: scale(1);
+}
+
+.parchment-letter::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid rgba(160, 20, 45, 0.25);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.letter-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.letter-header-title {
+  font-family: var(--font-script);
+  font-size: 2.8rem;
+  color: var(--accent-wine);
+  margin-bottom: 6px;
+}
+
+.letter-body {
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  line-height: 1.8;
+  color: #2b171a;
+  white-space: pre-line;
+  margin-bottom: 30px;
+}
+
+.letter-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   3. ГОЛОВНИЙ ЕКРАН (#screen-main)
+   -------------------------------------------------------------------------- */
+#screen-main {
+  flex-direction: column;
+}
+
+/* Герой секція — займає практично весь перший екран */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px 60px;
+  overflow: hidden;
+}
+
+/* Фонове головне фото */
+.hero-bg-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  filter: brightness(0.42) contrast(1.08) saturate(1.15);
+  transform: scale(1.02);
+  transition: transform 10s ease;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(12, 5, 8, 0.4) 0%, rgba(8, 4, 6, 0.88) 85%);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 5;
+  max-width: 860px;
+  animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 22px;
+  background: rgba(18, 9, 14, 0.75);
+  border: 1px solid var(--border-gold);
+  border-radius: 50px;
+  font-size: 0.95rem;
+  letter-spacing: 0.15em;
+  color: var(--accent-gold-light);
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.hero-title {
+  font-size: 2.8rem;
+  line-height: 1.25;
+  margin-bottom: 28px;
+  color: #fff;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 35px rgba(230, 57, 86, 0.4);
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+}
+
+/* СТАТИЧНИЙ ЛІЧИЛЬНИК: 1245 днів разом */
+.hero-counter-container {
+  margin: 10px 0 34px;
+}
+
+.hero-counter-number {
+  font-family: var(--font-display);
+  font-size: 3.4rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #fff 20%, var(--accent-gold-light) 60%, var(--accent-rose) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  filter: drop-shadow(0 0 25px rgba(229, 184, 105, 0.4));
+}
+
+@media (max-width: 768px) {
+  .hero-counter-number {
+    font-size: 2.5rem;
+  }
+}
+
+.hero-counter-label {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   ВІНІЛОВИЙ МУЗИЧНИЙ ПРОГРАВАЧ
+   Adele — Lovesong
+   -------------------------------------------------------------------------- */
+.turntable-wrapper {
+  margin: 36px auto 0;
+  max-width: 500px;
+  width: 100%;
+  background: rgba(18, 9, 14, 0.78);
+  border: 1px solid var(--border-gold);
+  border-radius: 24px;
+  padding: 22px 28px;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--glow-soft), 0 0 30px rgba(116, 17, 34, 0.25);
+}
+
+.turntable-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+@media (max-width: 520px) {
+  .turntable-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.turntable-deck {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+}
+
+.vinyl-record {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #252525 0%, #111 25%, #2a2a2a 26%, #111 40%, #1e1e1e 65%, #0a0a0a 100%);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.08);
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.5s ease;
+}
+
+.vinyl-record.spinning {
+  animation: spin 3.5s linear infinite;
+}
+
+.vinyl-grooves {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.vinyl-center-label {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-ruby) 0%, var(--accent-wine) 100%);
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #fff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.turntable-tonearm {
+  position: absolute;
+  top: -8px;
+  right: -5px;
+  width: 35px;
+  height: 60px;
+  pointer-events: none;
+  transform-origin: top right;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: rotate(-25deg);
+}
+
+.turntable-tonearm.playing {
+  transform: rotate(10deg);
+}
+
+.tonearm-head {
+  width: 4px;
+  height: 48px;
+  background: linear-gradient(to bottom, #d4af37, #999);
+  border-radius: 2px;
+  position: relative;
+}
+
+.tonearm-needle {
+  position: absolute;
+  bottom: 0;
+  left: -2px;
+  width: 8px;
+  height: 12px;
+  background: #ff4766;
+  border-radius: 2px;
+}
+
+.turntable-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.track-artist {
+  font-size: 0.85rem;
+  color: var(--accent-gold-light);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.track-name {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+.track-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.track-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-burgundy), var(--accent-rose));
+  border-radius: 3px;
+  transition: width 0.15s linear;
+}
+
+.track-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.track-time {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.track-buttons {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-player-action {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.btn-player-action:hover {
+  color: var(--accent-rose);
+  transform: scale(1.15);
+}
+
+.btn-player-action.btn-play-main {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--accent-burgundy), var(--accent-ruby));
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(200, 35, 63, 0.4);
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.volume-slider {
+  width: 60px;
+  accent-color: var(--accent-rose);
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   ХАБ РОЗДІЛІВ МЕНЮ (#hub-sections)
+   -------------------------------------------------------------------------- */
+.hub-section {
+  position: relative;
+  z-index: 5;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px 24px 100px;
+  width: 100%;
+}
+
+.section-intro-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-intro-title {
+  font-size: 2.4rem;
+  margin-bottom: 12px;
+}
+
+.section-intro-sub {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+}
+
+.menu-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 28px;
+}
+
+.menu-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 34px 26px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  backdrop-filter: blur(14px);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(200, 35, 63, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.menu-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 117, 140, 0.5);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(152, 23, 46, 0.35);
+}
+
+.menu-card:hover::before {
+  opacity: 1;
+}
+
+.menu-card-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(116, 17, 34, 0.35);
+  border: 1px solid var(--border-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(229, 184, 105, 0.2);
+  transition: var(--transition-fast);
+}
+
+.menu-card:hover .menu-card-icon {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px rgba(230, 57, 86, 0.5);
+}
+
+.menu-card-title {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.menu-card-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.menu-card-action {
+  margin-top: auto;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.2s ease;
+}
+
+.menu-card:hover .menu-card-action {
+  gap: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   4. РОЗДІЛ: НАШІ СПОГАДИ (#view-memories)
+   -------------------------------------------------------------------------- */
+.standalone-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at 50% 20%, #15080f 0%, #080406 90%);
+  z-index: 50;
+  overflow-y: auto;
+  padding: 40px 24px 80px;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.standalone-view.active {
+  display: block;
+  opacity: 1;
+}
+
+.view-nav-bar {
+  max-width: 1100px;
+  margin: 0 auto 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-back-menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 10px 20px;
+  border-radius: 30px;
+  color: var(--text-main);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: var(--transition-fast);
+  backdrop-filter: blur(10px);
+}
+
+.btn-back-menu:hover {
+  background: rgba(152, 23, 46, 0.4);
+  border-color: var(--accent-rose);
+  color: #fff;
+  transform: translateX(-3px);
+}
+
+.memories-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+}
+
+.memory-thumb-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.memory-thumb-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent-rose);
+  box-shadow: 0 15px 35px rgba(200, 35, 63, 0.35);
+}
+
+.memory-thumb-img-wrap {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  position: relative;
+}
+
+.memory-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.memory-thumb-card:hover .memory-thumb-img {
+  transform: scale(1.08);
+}
+
+.memory-thumb-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(12, 5, 8, 0.75);
+  border: 1px solid rgba(229, 184, 105, 0.4);
+  backdrop-filter: blur(8px);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--accent-gold-light);
+}
+
+.memory-thumb-info {
+  padding: 16px 18px;
+}
+
+.memory-thumb-title {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.memory-thumb-location {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* Lightbox спогаду з ефектом друку */
+.memory-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 2, 4, 0.94);
+  backdrop-filter: blur(18px);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.memory-lightbox.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-content-box {
+  width: 100%;
+  max-width: 1000px;
+  max-height: 90vh;
+  background: rgba(22, 10, 16, 0.92);
+  border: 1px solid var(--border-gold);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 40px rgba(152, 23, 46, 0.35);
+  position: relative;
+}
+
+@media (max-width: 860px) {
+  .lightbox-content-box {
+    flex-direction: column;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+}
+
+.lightbox-image-side {
+  flex: 1.2;
+  min-height: 380px;
+  background: #000;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  max-height: 80vh;
+}
+
+.lightbox-text-side {
+  flex: 1;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
+}
+
+.lightbox-header-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.lightbox-badge {
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+}
+
+.lightbox-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--accent-rose);
+  margin-bottom: 18px;
+}
+
+/* Контейнер машинописного ефекту */
+.typewriter-container {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #f7eff2;
+  min-height: 140px;
+}
+
+.typewriter-text {
+  display: inline;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background-color: var(--accent-rose);
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: blink 0.8s infinite;
+}
+
+.lightbox-feeling-box {
+  margin-top: 20px;
+  padding: 14px 18px;
+  background: rgba(152, 23, 46, 0.2);
+  border-left: 3px solid var(--accent-ruby);
+  border-radius: 4px 8px 8px 4px;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--accent-gold-light);
+}
+
+.lightbox-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lightbox-nav-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: var(--transition-fast);
+}
+
+.lightbox-nav-btn:hover {
+  background: var(--accent-wine);
+  border-color: var(--accent-rose);
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: var(--transition-fast);
+}
+
+.lightbox-close-btn:hover {
+  background: var(--accent-ruby);
+  transform: rotate(90deg);
+}
+
+/* --------------------------------------------------------------------------
+   5. РОЗДІЛ: 365 ПРИЧИН (#view-reasons)
+   -------------------------------------------------------------------------- */
+.reasons-view-container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.love-jar-wrapper {
+  position: relative;
+  width: 220px;
+  height: 280px;
+  margin: 20px auto 35px;
+  cursor: pointer;
+  transition: transform 0.4s ease;
+}
+
+.love-jar-wrapper:hover {
+  transform: scale(1.05);
+}
+
+.love-jar-glass {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(200, 35, 63, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 40px 40px 60px 60px;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7), inset 0 0 25px rgba(255, 117, 140, 0.2), 0 0 35px rgba(229, 184, 105, 0.25);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.love-jar-lid {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 24px;
+  background: linear-gradient(180deg, #d4af37 0%, #8c6d1f 100%);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  border: 1px solid #fae6a2;
+}
+
+.love-jar-ribbon {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  width: 100%;
+  height: 14px;
+  background: var(--accent-ruby);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.floating-notes-inside {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.mini-note-chip {
+  position: absolute;
+  width: 32px;
+  height: 22px;
+  background: #fff5ea;
+  border: 1px solid #e2c091;
+  border-radius: 3px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  animation: floatNote 4s infinite ease-in-out alternate;
+}
+
+/* Модалка записки з баночки */
+.reason-note-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 2, 4, 0.88);
+  backdrop-filter: blur(12px);
+  z-index: 350;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.reason-note-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.unfolded-note {
+  width: 100%;
+  max-width: 480px;
+  background: #fdfaf5;
+  color: #2b181b;
+  border: 1px solid #d4af37;
+  border-radius: 12px;
+  padding: 36px 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(229, 184, 105, 0.4);
+  position: relative;
+  text-align: center;
+  animation: unfoldCard 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.unfolded-note::before {
+  content: '❤️';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid #d4af37;
+  font-size: 14px;
+}
+
+.reason-number {
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: var(--accent-burgundy);
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.reason-text {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  line-height: 1.6;
+  color: #241115;
+  margin-bottom: 28px;
+}
+
+/* --------------------------------------------------------------------------
+   6. РОЗДІЛ: ВІДКРИЙ, КОЛИ… (#view-open-when)
+   -------------------------------------------------------------------------- */
+.open-when-grid {
+  max-width: 1050px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 28px;
+}
+
+.envelope-card {
+  background: linear-gradient(145deg, rgba(35, 14, 22, 0.85) 0%, rgba(18, 7, 12, 0.9) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 30px 24px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.envelope-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent-rose), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.envelope-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 117, 140, 0.5);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(200, 35, 63, 0.35);
+}
+
+.envelope-card:hover::after {
+  opacity: 1;
+}
+
+.envelope-card-stamp {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-ruby) 0%, var(--accent-wine) 100%);
+  border: 1px solid var(--border-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--accent-gold);
+  margin-bottom: 20px;
+  box-shadow: 0 0 15px rgba(229, 184, 105, 0.25);
+  transition: transform 0.3s ease;
+}
+
+.envelope-card:hover .envelope-card-stamp {
+  transform: scale(1.12) rotate(6deg);
+}
+
+.envelope-card-title {
+  font-size: 1.25rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.envelope-card-preview {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.envelope-card-action {
+  margin-top: auto;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   7. ФІНАЛЬНИЙ РОЗДІЛ: ЩЕ ДЕЩО ДЛЯ ТЕБЕ… (#view-final)
+   -------------------------------------------------------------------------- */
+.final-view-container {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  position: relative;
+}
+
+.final-intro-text {
+  font-size: 2.4rem;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeIn 1.8s ease 0.4s forwards;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(255, 117, 140, 0.5);
+}
+
+.heart-portal-wrapper {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+  cursor: pointer;
+  animation: heartbeat 2.2s infinite ease-in-out;
+}
+
+.big-glowing-heart {
+  width: 100%;
+  height: 100%;
+  color: var(--accent-ruby);
+  filter: drop-shadow(0 0 35px rgba(230, 57, 86, 0.7)) drop-shadow(0 0 70px rgba(152, 23, 46, 0.4));
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.heart-portal-wrapper:hover .big-glowing-heart {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 50px rgba(255, 117, 140, 0.9)) drop-shadow(0 0 90px rgba(230, 57, 86, 0.6));
+}
+
+.heart-touch-hint {
+  margin-top: 30px;
+  font-size: 1rem;
+  color: var(--accent-gold-light);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  animation: pulseOpacity 2s infinite ease-in-out;
+}
+
+/* Фінальне розкрите послання */
+.final-message-card {
+  display: none;
+  width: 100%;
+  max-width: 680px;
+  background: rgba(22, 10, 16, 0.94);
+  border: 1px solid var(--border-gold);
+  border-radius: 24px;
+  padding: 46px 40px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.95), 0 0 50px rgba(200, 35, 63, 0.45);
+  backdrop-filter: blur(20px);
+  text-align: center;
+  position: relative;
+  animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.final-message-card.revealed {
+  display: block;
+}
+
+.final-message-body {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  line-height: 1.85;
+  color: #fff;
+  white-space: pre-line;
+  margin-bottom: 34px;
+}
+
+.final-signature-highlight {
+  font-family: var(--font-script);
+  font-size: 2.8rem;
+  color: var(--accent-rose);
+  margin-top: 15px;
+  text-shadow: 0 0 20px rgba(255, 117, 140, 0.4);
+}
+
+.final-signature-sub {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--accent-gold-light);
+  margin-top: 8px;
+  letter-spacing: 0.05em;
+}
